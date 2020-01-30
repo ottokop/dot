@@ -41,7 +41,7 @@ swapon /dev/sda2
 mount /dev/sda1 /mnt
 
 # pacstrap
-pacstrap /mnt base linux linux-firmware
+pacstrap /mnt base ¨base-devel linux linux-firmware
 
 # fstab
 genfstab -U /mnt >> /mnt/etc/fstab
