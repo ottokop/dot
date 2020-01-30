@@ -41,15 +41,15 @@ swapon /dev/sda2
 mount /dev/sda1 /mnt
 
 # pacstrap
-pacstrap /mnt base
+pacstrap /mnt base linux linux-firmware
 
 # fstab
 genfstab -U /mnt >> /mnt/etc/fstab
-echo "org /home/$user/org vboxsf uid=$user,gid=wheel,rw,dmode=700,fmode=600,nofail 0 0" >> /mnt/etc/fstab
-echo "workspace /home/$user/workspace vboxsf uid=$user,gid=wheel,rw,dmode=700,fmode=600,nofail 0 0" >> /mnt/etc/fstab
+# echo "org /home/$user/org vboxsf uid=$user,gid=wheel,rw,dmode=700,fmode=600,nofail 0 0" >> /mnt/etc/fstab
+echo "onedrive /home/$user/onedrive vboxsf uid=$user,gid=wheel,rw,dmode=700,fmode=600,nofail 0 0" >> /mnt/etc/fstab
 
 # chroot
-wget https://raw.githubusercontent.com/abrochard/spartan-arch/master/chroot-install.sh -O /mnt/chroot-install.sh
+wget https://raw.githubusercontent.com/ottokop/dot/master/chroot-install.sh -O /mnt/chroot-install.sh
 arch-chroot /mnt /bin/bash ./chroot-install.sh $user $password $fast
 
 # reboot
