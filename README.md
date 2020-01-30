@@ -1,4 +1,5 @@
 this shortened URL https://tinyurl.com/s4tzkxb points to https://raw.githubusercontent.com/ottokop/dot/master/install.sh 
+this will create a onedrive folder in /home/$user/onedrive linked to the win10 OneDrive folder
 
 # copied from spartan-arch by abrochard
 
