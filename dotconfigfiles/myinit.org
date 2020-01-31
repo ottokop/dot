@@ -1,0 +1,433 @@
+#+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
+#+OPTIONS: author:t broken-links:nil c:nil creator:nil
+#+OPTIONS: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:t
+#+OPTIONS: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+#+OPTIONS: timestamp:t title:t toc:t todo:t |:t
+#+TITLE: myinit
+#+DATE: <2018-11-19 Mon>
+#+AUTHOR:
+#+EMAIL: ckopff@archG6
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+STARTUP: content
+
+#+OPTIONS: toc:nil num:nil
+
+;; inspired by https://github.com/zamansky/using-emacs/blob/master/myinit.org
+
+#+TITLE: MyOrg init file for Emacs on HP D6
+#+DATE: November 2018
+* Interface Tweaks
+#+BEGIN_SRC emacs-lisp
+
+(setq inhibit-startup-message t)
+(tool-bar-mode -1)
+(fset 'yes-or-no-p 'y-or-n-p)
+(global-set-key (kbd "<f5>") 'revert-buffer)
+#+END_SRC
+
+* UTF-8
+taken from [[https://www.masteringemacs.org/article/working-coding-systems-unicode-emacs][masteringemacs.org]]
+#+BEGIN_SRC emacs-lisp
+(prefer-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+;; backwards compatibility as default-buffer-file-coding-system
+;; is deprecated in 23.2.
+(if (boundp 'buffer-file-coding-system)
+    (setq-default buffer-file-coding-system 'utf-8)
+  (setq default-buffer-file-coding-system 'utf-8))
+
+;; Treat clipboard input as UTF-8 string first; compound text next, etc.
+(setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
+
+
+* Misc packages (zamansky 17 and 18)
+#+BEGIN_SRC emacs-lisp
+   (use-package beacon
+      :ensure t
+      :config
+      (beacon-mode 1))
+
+  (use-package hungry-delete
+    :ensure t
+    :config
+    (global-hungry-delete-mode 1))
+
+  (use-package expand-region
+    :ensure t
+    :config
+    (global-set-key (kbd "C-=") 'er/expand-region))
+
+  (use-package iedit
+  :ensure t)
+
+#+END_SRC
+
+#+RESULTS:
+: t
+
+* Try
+#+BEGIN_SRC emacs-lisp
+(use-package try
+	     :ensure t)
+#+END_SRC
+
+* flyspell
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'org-mode-hook 'flyspell-mode)
+  (add-hook 'text-mode-hook 'flyspell-mode)
+#+END_SRC
+
+* flycheck (programming language checker Zamansky 12)
+#+BEGIN_SRC emacs-lisp
+  (use-package flycheck
+    :ensure t
+    :init
+    (global-flycheck-mode t))
+
+#+END_SRC
+
+#+RESULTS:
+
+
+* Other
+#+BEGIN_SRC emacs-lisp
+(use-package which-key
+  :ensure t
+  :config (which-key-mode))
+
+(setq ido-enable-flex-matching t)
+(setq ido-everywhere t)
+(ido-mode 1)
+
+(defalias 'list-buffers 'ibuffer)
+;:(defalias 'list-buffers 'ibuffer-other-window)
+;; org stuffs
+
+(use-package org-bullets
+  :ensure t
+  :config
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+
+(use-package tabbar
+  :ensure t
+  :config (tabbar-mode t))
+
+(use-package auto-complete
+  :ensure t
+  :init
+  (progn
+    (ac-config-default)
+    (global-auto-complete-mode t)))
+
+
+(use-package counsel
+  :ensure t)
+#+END_SRC
+
+#+RESULTS:
+
+* Swiper
+#+BEGIN_SRC emacs-lisp
+
+(use-package swiper
+  :ensure try
+  :config
+  (progn
+    (ivy-mode 1)
+    (setq ivy-use-virtual-buffers t)
+    (setq enable-recursive-minibuffers t)
+    (global-set-key "\C-s" 'swiper)
+    (global-set-key (kbd "C-c C-r") 'ivy-resume)
+    (global-set-key (kbd "<f6>") 'ivy-resume)
+    (global-set-key (kbd "M-x") 'counsel-M-x)
+    (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+    (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+    (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+    (global-set-key (kbd "<f1> l") 'counsel-find-library)
+    (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+    (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+    (global-set-key (kbd "C-c g") 'counsel-git)
+    (global-set-key (kbd "C-c j") 'counsel-git-grep)
+    (global-set-key (kbd "C-c k") 'counsel-ag)
+    (global-set-key (kbd "C-x l") 'counsel-locate)
+    (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+    (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
+    ))
+
+#+END_SRC
+
+#+RESULTS:
+: t
+
+* Magit
+
+#+BEGIN_SRC emacs-lisp
+
+(use-package magit
+  :ensure t
+  :init
+  (progn
+  (bind-key "C-x g" 'magit-status)
+  ))
+
+ #+END_SRC
+
+
+* Git-Gutter and Git-Timemachine (Zamansky 42) (timemachine permet de feuilleter les versions avec n et p)
+#+BEGIN_SRC emacs-lisp
+  (use-package git-gutter
+    :ensure t
+    :init
+    (global-git-gutter-mode +1)
+   )
+
+  (use-package git-timemachine
+    :ensure t)
+
+   #+END_SRC
+
+   #+RESULTS:
+   : t
+
+* Reveal.js
+le setup de Zamansky pour ox-reveal does not work from a fresh emacs install. Run Mx package-install org to get the latest version of org and it will work
+#+BEGIN_SRC emacs-lisp
+
+  (use-package ox-reveal
+    :ensure t
+    :config
+      (require 'ox-reveal)
+      (setq org-reveal-root "http://cdn.jsdelivr.net/reveal.js/3.0.0/")
+      (setq org-reveal-mathjax t)
+  )
+      (use-package htmlize
+      :ensure t)
+
+
+
+#+END_SRC
+* All the icons (zamansky 57)
+#+BEGIN_SRC 
+  (use-package all-the-icons
+  :ensure t
+  :defer 0.5)
+
+  (use-package all-the-icons-ivy
+  :ensure t
+   :after (all-the-icons ivy)
+   :custom (all-the-icons-ivy-buffer-commands '(ivy-switch-buffer-other-window ivy-switch-buffer))
+   :config
+   (add-to-list 'all-the-icons-ivy-file-commands 'counsel-dired-jump)
+   (add-to-list 'all-the-icons-ivy-file-commands 'counsel-find-library)
+   (all-the-icons-ivy-setup))
+
+(use-package all-the-icons-dired
+:ensure t)
+
+(add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
+#+END_SRC
+
+* Tex
+#+BEGIN_SRC emacs-lisp
+(use-package tex
+    :ensure auctex)
+
+    (defun tex-view ()
+        (interactive)
+        (tex-send-command "zathura" (tex-append tex-print-file ".pdf")))
+#+END_SRC
+
+
+* Writing
+writegood-mode highlights bad word choices and has functions for calculating readability.
+#+BEGIN_SRC emacs-lisp
+
+
+  (use-package writegood-mode
+    :ensure t
+    :bind ("C-c g" . writegood-mode)
+    :config
+    (add-to-list 'writegood-weasel-words "actionable"))
+#+END_SRC
+
+#+RESULTS:
+: writegood-mode
+
+* centralize backup files from [[http://ergoemacs.org/emacs/emacs_set_backup_into_a_directory.html][ergoemacs.org]]
+#+BEGIN_SRC emacs-lisp
+  ;; backup in one place. flat, no tree structure
+  (setq backup-directory-alist '(("" . "~/.emacs.d/backup")))
+
+#+END_SRC
+* pairing brackets
+auto close bracket insertion. New in emacs 24
+#+BEGIN_SRC emacs-lisp
+(electric-pair-mode 1)
+#+END_SRC
+
+* overwrite selection
+make typing delete/overwrites selected text
+from [[http://ergoemacs.org/emacs/emacs_make_modern.html][ergoemacs]]
+#+BEGIN_SRC emacs-lisp
+(delete-selection-mode 1)
+#+END_SRC 
+* highlight current line
+#+BEGIN_SRC emacs-lisp
+(global-hl-line-mode 1)
+#+END_SRC
+* UTF-8
+#+BEGIN_SRC emacs-lisp
+(set-language-environment "UTF-8")
+(set-default-coding-systems 'utf-8)
+#+END_SRC
+
+* wrap lines
+#+BEGIN_SRC emacs-lisp
+; visual line, etc
+(global-visual-line-mode 1)
+#+END_SRC
+
+#+RESULTS:
+: t
+
+* Org Mode stuffs
+#+BEGIN_SRC emacs-lisp
+  (custom-set-variables
+
+	       '(org-directory "~/org")
+	       '(org-agenda-files (list org-directory))
+	       '(org-default-notes-file (concat org-directory "/notes.org"))
+	       '(org-export-html-postamble nil)
+	       '(org-hide-leading-stars t)
+	       '(org-startup-folded (quote overview))
+	       '(org-startup-indented t)
+	       )
+#+END_SRC
+
+#+RESULTS:
+
+* Flycheck
+#+BEGIN_SRC emacs-lisp
+
+(use-package flycheck
+  :ensure t
+  :init
+  (global-flycheck-mode t))
+
+#+END_SRC
+
+#+RESULTS:
+
+* TWBS (from Uncle Dave config file, Bootstrap type html export)
+#+BEGIN_SRC emacs-lisp
+  (use-package ox-twbs
+    :ensure t)
+#+END_SRC
+
+#+RESULTS:
+
+
+* Python
+#+BEGIN_SRC emacs-lisp
+  (setq py-python-command "python3")
+  (setq python-shell-interpreter "python3")
+
+  (use-package elpy
+    :ensure t
+    :config
+    (elpy-enable))
+
+  (use-package virtualenvwrapper
+    :ensure t
+    :config
+    (venv-initialize-interactive-shells)
+    (venv-initialize-eshell))
+#+END_SRC
+
+* Org Babel
+#+BEGIN_SRC emacs-lisp
+  (org-babel-do-load-languages
+   (quote org-babel-load-languages)
+   (quote ((emacs-lisp . t)
+	   (dot . t)
+	   (plantuml . t)
+	   (python . t)
+	   (gnuplot . t)
+	   (shell . t)
+	   (ledger . t)
+	   (org . t)
+	   (latex . t)
+	   (haskell . t))))
+#+END_SRC
+
+
+* Display image inline
+#+BEGIN_SRC emacs-lisp
+  (setq org-startup-with-inline-images t)
+
+#+END_SRC
+
+* PDF-tools
+#+BEGIN_SRC emacs-lisp
+  (use-package pdf-tools
+    :ensure t
+    :config
+    (pdf-tools-install)
+    )
+
+  (use-package org-pdfview
+  :ensure t)
+
+  (require 'pdf-tools)
+  (require 'org-pdfview)
+#+END_SRC
+
+#+RESULTS:
+: org-pdfview
+
+* Eyebrowse
+nice to go from different buffer views.  see yt Zamansky episode  52 for details
+to enable it execute M-x eyebrowse-mode RET (pas certain que cela soit nécessaire)
+voir instruction sur github.com/wasamasa/eyebrowse
+
+#+BEGIN_SRC emacs-lisp
+  (use-package eyebrowse
+    :ensure t
+    )
+#+END_SRC
+* Undo-Tree (linked to C-x u)
+#+BEGIN_SRC emacs-lisp
+  (use-package undo-tree
+    :ensure t
+    :init
+    (global-undo-tree-mode))
+#+END_SRC
+* org-attach-screenshot
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package org-attach-screenshot
+    :ensure t)
+
+;    :init
+;    (setq org-attach-screenshot-command-line "maim -s  %f"))
+
+  (bind-key "C-S-y" 'org-attach-screenshot)
+
+
+#+END_SRC
+* org-download
+#+BEGIN_SRC emacs-lisp
+  (use-package org-download
+    :ensure t
+    )
+
+  (add-hook 'dired-mode-hook 'org-download-enable)
+  (setq org-download-screenshot-method "scrot -s %s")
+
+
+#+END_SRC
