@@ -42,7 +42,7 @@ taken from [[https://www.masteringemacs.org/article/working-coding-systems-unico
 
 ;; Treat clipboard input as UTF-8 string first; compound text next, etc.
 (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
-
+#+END_SRC
 
 * Misc packages (zamansky 17 and 18)
 #+BEGIN_SRC emacs-lisp
@@ -66,8 +66,7 @@ taken from [[https://www.masteringemacs.org/article/working-coding-systems-unico
 
 #+END_SRC
 
-#+RESULTS:
-: t
+
 
 * Try
 #+BEGIN_SRC emacs-lisp
@@ -89,8 +88,6 @@ taken from [[https://www.masteringemacs.org/article/working-coding-systems-unico
     (global-flycheck-mode t))
 
 #+END_SRC
-
-#+RESULTS:
 
 
 * Other
